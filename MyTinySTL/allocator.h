@@ -3,6 +3,10 @@
 
 // 这个头文件包含一个模板类 allocator，用于管理内存的分配、释放，对象的构造、析构
 
+
+//分配器将new的申请空间（allocate）和调用构造函数（construct）的两个功能分开实现。
+
+
 #include "construct.h"
 #include "util.h"
 
@@ -15,21 +19,24 @@ template <class T>
 class allocator
 {
 public:
-  typedef T            value_type;
-  typedef T*           pointer;
-  typedef const T*     const_pointer;
-  typedef T&           reference;
-  typedef const T&     const_reference;
-  typedef size_t       size_type;
-  typedef ptrdiff_t    difference_type;
+  typedef T            value_type;              // 数据类型
+  typedef T*           pointer;                 // 数据类型指针
+  typedef const T*     const_pointer;           // const数据类型指针
+  typedef T&           reference;               // 数据类型引用
+  typedef const T&     const_reference;         // const数据类型引用
+  typedef size_t       size_type;               // 数据类型大小
+  typedef ptrdiff_t    difference_type;         // 数据类型指针距离 ？？
 
 public:
+  // 分配内存
   static T*   allocate();
   static T*   allocate(size_type n);
 
+  // 释放内存
   static void deallocate(T* ptr);
   static void deallocate(T* ptr, size_type n);
 
+  // 构造对象
   static void construct(T* ptr);
   static void construct(T* ptr, const T& value);
   static void construct(T* ptr, T&& value);
@@ -37,10 +44,13 @@ public:
   template <class... Args>
   static void construct(T* ptr, Args&& ...args);
 
+  // 析构对象
   static void destroy(T* ptr);
   static void destroy(T* first, T* last);
 };
 
+
+// 分配内存直接使用的operator new
 template <class T>
 T* allocator<T>::allocate()
 {
@@ -55,6 +65,8 @@ T* allocator<T>::allocate(size_type n)
   return static_cast<T*>(::operator new(n * sizeof(T)));
 }
 
+
+// 回收内存使用的operator delete
 template <class T>
 void allocator<T>::deallocate(T* ptr)
 {
@@ -74,6 +86,7 @@ void allocator<T>::deallocate(T* ptr, size_type /*size*/)
 template <class T>
 void allocator<T>::construct(T* ptr)
 {
+  //construct直接调用了placement new
   mystl::construct(ptr);
 }
 
