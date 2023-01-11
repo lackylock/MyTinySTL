@@ -107,14 +107,14 @@ void allocator<T>::construct(T* ptr, const T& value)
 }
 
 template <class T>
- void allocator<T>::construct(T* ptr, T&& value)
+ void allocator<T>::construct(T* ptr, T&& value) 
 {
   mystl::construct(ptr, mystl::move(value));
 }
 
 template <class T>
 template <class ...Args>
- void allocator<T>::construct(T* ptr, Args&& ...args)
+ void allocator<T>::construct(T* ptr, Args&& ...args)  //https://blog.csdn.net/hyl999/article/details/106261528
 {
   mystl::construct(ptr, mystl::forward<Args>(args)...);
 }
