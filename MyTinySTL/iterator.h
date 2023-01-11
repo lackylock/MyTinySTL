@@ -11,11 +11,11 @@ namespace mystl
 {
 
 // 五种迭代器类型
-struct input_iterator_tag {};
-struct output_iterator_tag {};
-struct forward_iterator_tag : public input_iterator_tag {};
-struct bidirectional_iterator_tag : public forward_iterator_tag {};
-struct random_access_iterator_tag : public bidirectional_iterator_tag {};
+struct input_iterator_tag {};                                                 //输入迭代器
+struct output_iterator_tag {};                                                //输出迭代器
+struct forward_iterator_tag : public input_iterator_tag {};                   //前向迭代器
+struct bidirectional_iterator_tag : public forward_iterator_tag {};           //双向迭代器
+struct random_access_iterator_tag : public bidirectional_iterator_tag {};     //随机访问迭代器 
 
 // iterator 模板
 template <class Category, class T, class Distance = ptrdiff_t,
@@ -29,7 +29,7 @@ template <class Category, class T, class Distance = ptrdiff_t,
   typedef Distance                             difference_type;         // 两个迭代器之间的距离？？？？
 };
 
-// iterator traits
+// iterator traits  
 
 template <class T>
 struct has_iterator_cat
@@ -72,6 +72,7 @@ struct iterator_traits
   : public iterator_traits_helper<Iterator, has_iterator_cat<Iterator>::value> {};
 
 // 针对原生指针的偏特化版本
+// 注意：原生指针是一种Random Access Iteratot
 template <class T>
 struct iterator_traits<T*>
 {
@@ -239,7 +240,7 @@ public:
 public:
   // 构造函数
   reverse_iterator() {}
-  explicit reverse_iterator(iterator_type i) :current(i) {}
+  explicit reverse_iterator(iterator_type i) :current(i) {}  //不能进行隐式转换
   reverse_iterator(const self& rhs) :current(rhs.current) {}
 
 public:

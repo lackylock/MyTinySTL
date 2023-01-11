@@ -55,6 +55,17 @@ void construct(Ty* ptr, Args&&... args)
 // destroy 将对象析构
 
 
+//“trivial destructor”一般是指用户没有自定义析构函数，而由系统生成的，这种析构函数在《STL源码解析》中成为“无关痛痒”的析构函数。
+
+//反之，用户自定义了析构函数，则称之为“non-trivial destructor”，这种析构函数如果申请了新的空间一定要显式的释放，否则会造成内存泄露
+
+//对于trivial destructor，如果每次都进行调用，显然对效率是一种伤害，如何进行判断呢？《STL源码解析》中给出的说明是：
+
+//首先利用value_type()获取所指对象的型别，再利用type_traits判断该型别的析构函数是否trivial，若是(true_type)，则什么也不做，若为(__false_type)，则去调用destory()函数
+//也就是说，在实际的应用当中，STL库提供了相关的判断方法__type_traits，感兴趣的读者可以自行查阅使用方式。除了trivial destructor，还有trivial construct、trivial copy construct等，如果能够对是否trivial进行区分，可以采用内存处理函数memcpy()、malloc()等更加高效的完成相关操作，提升效率。
+
+
+
 template <class Ty>
 void destroy_one(Ty*, std::true_type) {}
 
