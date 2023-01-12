@@ -107,13 +107,26 @@ void allocator<T>::construct(T* ptr, const T& value)
 }
 
 template <class T>
- void allocator<T>::construct(T* ptr, T&& value)
+ void allocator<T>::construct(T* ptr, T&& value)   //  T&& ---- 精确传递
 {
-  mystl::construct(ptr, mystl::move(value));
+  // 既然编译器只对右值引用才能调用移动构造函数和移动赋值函数，又因为所有命名对象都只能是左值引用。
+  // 在这样的条件下，如果已知一个命名对象不再被使用而想对它调用转移构造函数和转移赋值函数，
+  // 也就是把一个左值引用当做右值引用来使用，怎么做呢？
+  // 标准库提供了函数 std::move，这个函数以非常简单的方式将左值引用转换为右值引用。
+  mystl::construct(ptr, mystl::move(value));    //标准库函数std::move
 }
 
+
+/*
+右值引用：为了支持移动操作，C++11引入了一种新的引用类型—右值引用。
+所谓右值引用就是必须绑定到右值的引用。
+我们通过&&而不是&来获得右值引用。如我们将要看到的，右值引用有一个重要的性质——只能绑定到一个将要销毁的对象。 
+因此，我们可以自由地将一个右值引用的资源“移动”到另一个对象中。
+
+*/
+
 template <class T>
-template <class ...Args>
+template <class ...Args>   // 声明可变参数模板时需要在typename或class后面带上省略号“...”
  void allocator<T>::construct(T* ptr, Args&& ...args)
 {
   mystl::construct(ptr, mystl::forward<Args>(args)...);
