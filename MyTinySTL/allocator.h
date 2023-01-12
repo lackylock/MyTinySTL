@@ -108,6 +108,7 @@ void allocator<T>::construct(T* ptr, const T& value)
 
 template <class T>
  void allocator<T>::construct(T* ptr, T&& value)   //  T&& ---- 精确传递
+
 {
   // 既然编译器只对右值引用才能调用移动构造函数和移动赋值函数，又因为所有命名对象都只能是左值引用。
   // 在这样的条件下，如果已知一个命名对象不再被使用而想对它调用转移构造函数和转移赋值函数，
@@ -127,7 +128,7 @@ template <class T>
 
 template <class T>
 template <class ...Args>   // 声明可变参数模板时需要在typename或class后面带上省略号“...”
- void allocator<T>::construct(T* ptr, Args&& ...args)
+ void allocator<T>::construct(T* ptr, Args&& ...args)   //https://blog.csdn.net/hyl999/article/details/106261528
 {
   mystl::construct(ptr, mystl::forward<Args>(args)...);
 }
